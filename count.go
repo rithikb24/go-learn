@@ -11,19 +11,25 @@ import (
 func main() {
 	filePath := os.Args[1]
 
-	fmt.Println(line_count(filePath))
-	fmt.Println(word_count(filePath))
+	// fmt.Println(line_count(filePath))
+	// character_count(filePath)
+	file := file_extraction(filePath)
+	fmt.Println(line_count(file))
+	defer file.Close()
 }
 
-func line_count(filepath string) int {
-
-	var count int
+func file_extraction(filepath string) *os.File {
 	file, err := os.Open(filepath)
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(1)
 	}
-	defer file.Close()
+	return file
+}
+
+func line_count(file *os.File) int {
+
+	var count int
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() {
@@ -32,18 +38,26 @@ func line_count(filepath string) int {
 	return count
 }
 
-func word_count(filepath string) int {
+func word_count(file *os.File) int {
 	count := 0
-	file, err := os.Open(filepath)
-	if err != nil {
-		log.Fatal(err)
-		os.Exit(1)
-	}
-	defer file.Close()
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() {
 		count = count + len(strings.Split(scanner.Text(), " "))
+	}
+	return count
+}
+
+func character_count(file *os.File) int {
+	count := 0
+	scanner := bufio.NewScanner(file)
+
+	for scanner.Scan() {
+		str := strings.Split(scanner.Text(), " ")
+		for i := 0; i < len(str[0]); i++ {
+			count++
+			fmt.Println(count)
+		}
 	}
 	return count
 }
