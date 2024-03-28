@@ -9,12 +9,18 @@ import (
 )
 
 func main() {
-	filePath := os.Args[1]
-
-	// fmt.Println(line_count(filePath))
-	// character_count(filePath)
+	command := os.Args[1]
+	filePath := os.Args[2]
 	file := file_extraction(filePath)
-	fmt.Println(line_count(file))
+
+	if command == "-l" {
+		fmt.Println(line_count(file))
+	} else if command == "-w" {
+		fmt.Println(word_count(file))
+	} else if command == "-c" {
+		fmt.Println(character_count(file))
+	}
+
 	defer file.Close()
 }
 
@@ -53,10 +59,9 @@ func character_count(file *os.File) int {
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() {
-		str := strings.Split(scanner.Text(), " ")
-		for i := 0; i < len(str[0]); i++ {
+		str := scanner.Text()
+		for i := 0; i < len(str); i++ {
 			count++
-			fmt.Println(count)
 		}
 	}
 	return count
